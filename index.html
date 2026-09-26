@@ -4,7 +4,88 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>JETU — MVP</title>
-<link rel="stylesheet" href="style.css">
+<style>
+  :root{
+    --bg:#0b1220; --panel:#121c2e; --line:#233150;
+    --text:#eef2fb; --muted:#8fa0c0; --accent:#ff7a45; --accent-dim:#ff7a4522;
+    --good:#38c793; --gold:#ffc45a; --blue:#3ea6ff; --font:'Segoe UI',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#070c16;font-family:var(--font);color:var(--text);display:flex;justify-content:center;padding:24px 12px}
+  .phone{width:380px;background:var(--bg);border-radius:28px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.5);border:1px solid var(--line);position:relative}
+  header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px}
+  .stats{display:flex;align-items:center;gap:12px;font-weight:600;font-size:13px}
+  .stats span.coin{color:var(--gold)} .stats span.fire{color:var(--accent)}
+  .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#3a4a6b,#1c2740);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted)}
+  nav{display:flex;gap:4px;padding:0 10px 10px;flex-wrap:wrap}
+  nav button{flex:1;min-width:70px;background:none;border:1px solid var(--line);color:var(--muted);padding:7px 0;border-radius:11px;font-size:10.8px;cursor:pointer}
+  nav button.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+  main{padding:0 14px 20px;min-height:520px}
+  h2.section{font-size:13px;color:var(--muted);margin:14px 0 8px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+  .card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .card h3{margin:0 0 6px;font-size:15px}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+  .tag{font-size:11px;background:#1d2b46;color:var(--muted);padding:3px 8px;border-radius:8px;cursor:pointer;user-select:none}
+  .tag.sel{background:var(--accent);color:#1a0d05;font-weight:600}
+  .match{font-size:12px;font-weight:700;color:var(--good);white-space:nowrap}
+  .meta{font-size:12px;color:var(--muted);margin-top:8px}
+  .apply{width:100%;margin-top:10px;background:var(--accent);border:none;color:#1a0d05;font-weight:700;padding:10px;border-radius:10px;cursor:pointer;font-size:13px}
+  .apply.done{background:#1d2b46;color:var(--good)}
+  .profile-head{display:flex;gap:12px;align-items:center;padding:16px 14px 4px}
+  .profile-head .avatar{width:52px;height:52px;font-size:18px}
+  .profile-head h3{margin:0;font-size:16px}
+  .profile-head p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+  .grid-cal{display:grid;grid-template-columns:repeat(14,1fr);gap:3px;margin-top:8px}
+  .grid-cal div{width:100%;padding-top:100%;border-radius:3px;background:#182338}
+  .cv-note{font-size:12px;color:var(--muted);line-height:1.5;background:#0f1626;border:1px dashed var(--line);border-radius:10px;padding:10px;margin-top:10px}
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:20}
+  .modal-bg.show{display:flex}
+  .modal{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;width:320px}
+  .modal h4{margin:0 0 8px;color:var(--accent)}
+  .modal p{font-size:13px;line-height:1.6}
+  .modal button{margin-top:12px;width:100%;background:var(--accent);border:none;padding:10px;border-radius:10px;font-weight:700;cursor:pointer}
+  .badge{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--line);padding:2px 6px;border-radius:6px;margin-left:6px}
+  .due-item{display:flex;justify-content:space-between;font-size:12px;padding:7px 0;border-bottom:1px solid var(--line)}
+  .due-item:last-child{border-bottom:none}
+  .due-item .t{color:var(--muted)}
+  .auth{position:absolute;inset:0;background:var(--bg);z-index:30;padding:26px 20px;display:flex;flex-direction:column}
+  .auth h1{font-size:22px;margin:6px 0 4px}
+  .auth p.sub{color:var(--muted);font-size:13px;margin:0 0 18px}
+  .auth label{font-size:12px;color:var(--muted);display:block;margin:12px 0 6px}
+  .auth input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;color:var(--text);font-size:14px}
+  .auth .start{margin-top:22px}
+  .path-wrap{position:relative;padding:10px 0}
+  .path-wrap::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--line);transform:translateX(-1px)}
+  .stage{position:relative;width:78%;margin-bottom:26px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer}
+  .stage.left{margin-right:auto}
+  .stage.right{margin-left:auto}
+  .stage .dot{position:absolute;top:14px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:2px solid var(--line)}
+  .stage.left .dot{right:-31px}
+  .stage.right .dot{left:-31px}
+  .stage.done{border-color:var(--good)}
+  .stage.done .dot{background:var(--good);border-color:var(--good)}
+  .stage.current{border-color:var(--accent)}
+  .stage.current .dot{background:var(--accent);border-color:var(--accent)}
+  .stage h4{margin:0 0 2px;font-size:13px}
+  .stage p{margin:0;font-size:11px;color:var(--muted)}
+  .stage .detail{display:none;font-size:11px;color:var(--text);margin-top:6px;border-top:1px dashed var(--line);padding-top:6px}
+  .stage.open .detail{display:block}
+  .chart-head{display:flex;justify-content:space-between;align-items:center}
+  .period{display:flex;gap:4px}
+  .period button{background:none;border:1px solid var(--line);color:var(--muted);font-size:10px;padding:3px 8px;border-radius:7px;cursor:pointer}
+  .period button.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+  .skill-name{font-size:13px;font-weight:600;margin:14px 0 4px;display:flex;align-items:center;gap:6px}
+  .dotc{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .avatar-preview{display:flex;flex-direction:column;align-items:center;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:16px;margin-bottom:14px}
+  .avatar-svg{width:110px;height:130px}
+  .shop-item{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+  .shop-item .info{font-size:13px}
+  .shop-item .price{font-size:12px;color:var(--gold);margin-top:2px}
+  .buy{background:var(--accent-dim);border:1px solid var(--accent);color:var(--accent);padding:7px 11px;border-radius:9px;font-size:11.5px;cursor:pointer;white-space:nowrap}
+  .buy.owned{background:#1d2b46;border-color:var(--good);color:var(--good)}
+  .buy.equipped{background:var(--good);border-color:var(--good);color:#06251b}
+</style>
 </head>
 <body>
 <div class="phone">
@@ -12,7 +93,7 @@
   <div class="auth" id="authScreen">
     <h1>Добро пожаловать в JETU</h1>
     <p class="sub">Где талант встречает возможности. Расскажите о себе за 30 секунд.</p>
-    <label>Имя</label><input id="regName" placeholder="Например, Данияр">
+    <label>Имя</label><input id="regName" placeholder="Например, Даниял">
     <label>Город</label><input id="regCity" placeholder="Например, Тараз">
     <label>Класс</label><input id="regGrade" placeholder="Например, 10">
     <label>Навыки (выберите несколько)</label>
@@ -27,9 +108,8 @@
   </div>
 
   <header>
-    <button class="iconbtn" data-tab="feed" title="На главную">🏠</button>
-    <div class="stats"><span class="fire" data-tab="streak" style="cursor:pointer">🔥 <span id="streakVal">4</span></span><span class="coin">🪙 <span id="pointsVal">150</span></span></div>
-    <div class="avatar" id="avatarSlot"></div>
+    <div class="stats"><span class="fire">🔥 <span id="streakVal">4</span></span><span class="coin">🪙 <span id="pointsVal">150</span></span></div>
+    <div class="avatar" id="avatarInit">?</div>
   </header>
   <nav>
     <button class="active" data-tab="feed">Лента</button>
@@ -44,7 +124,6 @@
     <div id="dash" style="display:none"></div>
     <div id="profile" style="display:none"></div>
     <div id="shop" style="display:none"></div>
-    <div id="streak" style="display:none"></div>
   </main>
 </div>
 
@@ -52,13 +131,172 @@
   <div class="modal"><h4 id="modalTitle"></h4><p id="modalText"></p><button onclick="closeModal()">Ок</button></div>
 </div>
 
-<script src="state.js"></script>
-<script src="feed.js"></script>
-<script src="profile.js"></script>
-<script src="path.js"></script>
-<script src="dashboard.js"></script>
-<script src="shop.js"></script>
-<script src="streak.js"></script>
-<script src="main.js"></script>
+<script>
+const state = { name:"", city:"", grade:"", skills:[], points:150, streak:4, hat:false, cape:"" };
+
+const tasks = [
+  {org:"НКО «Дала Көмек»", title:"Telegram-бот для приёма заявок волонтёров", tags:["Python","Social"], match:95, mentor:"Есть куратор от НКО", reward:40, due:"24.09, 14:00"},
+  {org:"Кофейня «Buta»", title:"Мини-аналитика продаж в Google Sheets", tags:["Data","Excel"], match:88, mentor:"Есть куратор от бизнеса", reward:30, due:"27.09, 17:00"},
+  {org:"AGIS Alumni Network", title:"Вебинар: как оформить портфолио для гранта", tags:["Webinar"], match:92, mentor:"Спикер: выпускник-грантополучатель", reward:15, due:"28.09, 17:00"}
+];
+
+const stages = [
+  {title:"1. Семечко", desc:"Регистрация и первый профиль", need:0, detail:"Ты создал(а) профиль — путь начался."},
+  {title:"2. Росток", desc:"Первый отклик на задачу", need:40, detail:"Откликнись хотя бы на одну задачу в ленте."},
+  {title:"3. Молодое дерево", desc:"Первая подтверждённая задача", need:70, detail:"Куратор подтвердил результат — запись ушла в CV."},
+  {title:"4. Крепкое дерево", desc:"3 задачи + первое CV-резюме", need:100, detail:"Собран цельный блок Social Impact CV."},
+  {title:"5. Лес возможностей", desc:"Первая поданная заявка на грант", need:150, detail:"Finance Navigator подобрал грант под твоё CV."}
+];
+
+const skillData = {
+  Python:{color:"var(--blue)", week:[2,3,3,4,5,6], month:[1,2,4,5,7,9], year:[0,2,5,7,10,14]},
+  "Data Science":{color:"var(--gold)", week:[1,1,2,2,3,3], month:[0,1,2,3,4,6], year:[0,1,3,5,8,11]},
+  "Social Impact":{color:"var(--good)", week:[1,2,2,3,4,5], month:[1,3,4,6,8,10], year:[0,2,4,7,9,13]}
+};
+let period = "week";
+
+const shopItems = [
+  {name:"Пиджак «Эксперт»", price:100, key:"jacket", color:"#2d6fae"},
+  {name:"Кепка JETU", price:80, key:"hat", color:"#ffc45a"},
+  {name:"Фон профиля «Аврора»", price:150, key:"bg", color:"linear-gradient(135deg,#ff7a45,#3ea6ff)"}
+];
+
+let applied = {}, owned = {}, equipped = {};
+
+function finishRegistration(){
+  state.name = document.getElementById('regName').value || "Гость";
+  state.city = document.getElementById('regCity').value || "—";
+  state.grade = document.getElementById('regGrade').value || "—";
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('avatarInit').innerText = state.name[0].toUpperCase();
+  renderFeed();
+}
+document.getElementById('regSkills').addEventListener('click', e=>{
+  if(e.target.classList.contains('tag')){
+    e.target.classList.toggle('sel');
+    const s = e.target.dataset.skill;
+    state.skills = state.skills.includes(s) ? state.skills.filter(x=>x!==s) : [...state.skills, s];
+  }
+});
+
+function cvSnippet(t){ return `«Разработал(а) решение «${t.title}» для ${t.org}, применив навыки: ${t.tags.join(", ")}. Задача подтверждена организацией.» — добавлено в Social Impact CV.`; }
+
+function renderFeed(){
+  document.getElementById('feed').innerHTML = '<h2 class="section">Курируемые задачи и менторы под ваш профиль</h2>' +
+    tasks.map((t,i)=>`
+      <div class="card">
+        <div class="top"><h3>${t.title}</h3><div class="match">${t.match}% match</div></div>
+        <div class="meta">${t.org} · ${t.mentor} · до ${t.due}</div>
+        <div class="tags">${t.tags.map(g=>`<span class="tag">${g}</span>`).join('')}</div>
+        <button class="apply ${applied[i]?'done':''}" onclick="apply(${i})">${applied[i]?'✓ Отклик отправлен':'Откликнуться · +'+t.reward+' 🪙'}</button>
+      </div>`).join('');
+  updateStats();
+}
+function apply(i){
+  if(applied[i]) return;
+  applied[i]=true; state.points += tasks[i].reward;
+  renderFeed();
+  setTimeout(()=>{
+    document.getElementById('modalTitle').innerText = `+${tasks[i].reward} 🪙 · Черновик CV сгенерирован`;
+    document.getElementById('modalText').innerText = cvSnippet(tasks[i]);
+    document.getElementById('modalBg').classList.add('show');
+  },400);
+}
+function closeModal(){ document.getElementById('modalBg').classList.remove('show'); }
+function updateStats(){ document.getElementById('pointsVal').innerText=state.points; document.getElementById('streakVal').innerText=state.streak; }
+
+function renderPath(){
+  document.getElementById('path').innerHTML = '<h2 class="section">Твой путь роста</h2><div class="path-wrap">' +
+    stages.map((s,i)=>{
+      const done = state.points>=s.need;
+      const isCurrentTop = stages.filter(x=>state.points>=x.need).length-1===i;
+      const cls = done ? (isCurrentTop?'current':'done') : '';
+      const side = i%2===0?'left':'right';
+      return `<div class="stage ${side} ${cls}" onclick="this.classList.toggle('open')">
+        <div class="dot"></div><h4>${s.title}</h4><p>${s.desc}${s.need>0?` · ${s.need} 🪙`:''}</p>
+        <div class="detail">${s.detail}</div></div>`;
+    }).join('') + '</div>';
+}
+
+function sparkline(points,color){
+  const w=260,h=44,max=Math.max(...points,1);
+  const step=w/(points.length-1);
+  const d=points.map((p,i)=>`${i===0?'M':'L'}${i*step},${h-(p/max)*h}`).join(' ');
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:44px"><path d="${d}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+function renderDash(){
+  document.getElementById('dash').innerHTML = `<div class="card">
+    <div class="chart-head"><h2 class="section" style="margin:0">Дашборд навыков</h2>
+      <div class="period">
+        <button data-p="week" class="${period==='week'?'active':''}">Неделя</button>
+        <button data-p="month" class="${period==='month'?'active':''}">Месяц</button>
+        <button data-p="year" class="${period==='year'?'active':''}">Год</button>
+      </div></div>
+    ${Object.entries(skillData).map(([name,d])=>`
+      <div class="skill-name"><span class="dotc" style="background:${d.color}"></span>${name}</div>${sparkline(d[period], d.color)}
+    `).join('')}
+  </div>`;
+  document.querySelectorAll('.period button').forEach(b=>b.addEventListener('click',()=>{period=b.dataset.p; renderDash();}));
+}
+
+function renderProfile(){
+  const done = Object.keys(applied).length;
+  const cells = Array.from({length:42}).map((_,i)=>{
+    const lvl = i%7===0?3:(i%3===0?2:(i%5===0?1:0));
+    return `<div style="background:${['#182338','#1f3a5f','#2d6fae','#3ea6ff'][lvl]}"></div>`;
+  }).join('');
+  const upcoming = tasks.map(t=>`<div class="due-item"><span>${t.title.slice(0,26)}${t.title.length>26?'…':''}</span><span class="t">${t.due}</span></div>`).join('');
+  document.getElementById('profile').innerHTML = `
+    <div class="profile-head"><div class="avatar">${(state.name[0]||'?').toUpperCase()}</div>
+      <div><h3>${state.name} (${state.city}) <span class="badge">${state.grade} класс</span></h3><p>Навыки: ${state.skills.join(', ')||'—'}</p></div></div>
+    <h2 class="section">Мини-CV — черновик</h2>
+    <div class="card">${done===0?'<p style="font-size:12px;color:var(--muted)">Пока пусто — откликнитесь на задачу в ленте.</p>':
+      Object.keys(applied).map(i=>`<div class="cv-note">${cvSnippet(tasks[i])}</div>`).join('')}</div>
+    <h2 class="section">Трекер и ближайшие дедлайны</h2>
+    <div class="card"><div class="grid-cal">${cells}</div><div style="margin-top:10px">${upcoming}</div></div>`;
+}
+
+function renderShop(){
+  document.getElementById('shop').innerHTML = `
+    <div class="avatar-preview">
+      <svg class="avatar-svg" viewBox="0 0 100 120">
+        <rect x="30" y="60" width="40" height="45" rx="10" fill="${owned.jacket&&equipped.jacket?shopItems[0].color:'#334565'}"/>
+        <circle cx="50" cy="35" r="20" fill="#e9b98a"/>
+        ${owned.hat&&equipped.hat?`<rect x="30" y="14" width="40" height="12" rx="6" fill="${shopItems[1].color}"/>`:''}
+      </svg>
+    </div>
+    <h2 class="section">Магазин — трать очки за задачи</h2>
+    ${shopItems.map(it=>{
+      const isOwned = owned[it.key], isEq = equipped[it.key];
+      const label = isEq ? 'Снять' : (isOwned ? 'Надеть' : 'Купить · '+it.price+' 🪙');
+      return `<div class="shop-item"><div class="info">${it.name}${!isOwned?`<div class="price">🪙 ${it.price}</div>`:''}</div>
+        <button class="buy ${isEq?'equipped':(isOwned?'owned':'')}" onclick="buyOrEquip('${it.key}')">${label}</button></div>`;
+    }).join('')}`;
+}
+function buyOrEquip(key){
+  const it = shopItems.find(x=>x.key===key);
+  if(!owned[key]){
+    if(state.points < it.price) return;
+    state.points -= it.price; owned[key]=true; equipped[key]=true;
+  } else {
+    equipped[key] = !equipped[key];
+  }
+  renderShop(); updateStats();
+}
+
+document.querySelectorAll('nav button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.tab;
+    ['feed','path','dash','profile','shop'].forEach(t=>{ document.getElementById(t).style.display = t===tab?'block':'none'; });
+    if(tab==='path') renderPath();
+    if(tab==='dash') renderDash();
+    if(tab==='profile') renderProfile();
+    if(tab==='shop') renderShop();
+  });
+});
+renderFeed();
+</script>
 </body>
 </html>
