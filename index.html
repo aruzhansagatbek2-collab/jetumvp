@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JETU — MVP</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="phone">
+
+  <div class="auth" id="authScreen">
+    <h1>Добро пожаловать в JETU</h1>
+    <p class="sub">Где талант встречает возможности. Расскажите о себе за 30 секунд.</p>
+    <label>Имя</label><input id="regName" placeholder="Например, Данияр">
+    <label>Город</label><input id="regCity" placeholder="Например, Тараз">
+    <label>Класс</label><input id="regGrade" placeholder="Например, 10">
+    <label>Навыки (выберите несколько)</label>
+    <div class="tags" id="regSkills">
+      <span class="tag" data-skill="Python">Python</span>
+      <span class="tag" data-skill="Data">Data</span>
+      <span class="tag" data-skill="Design">Design</span>
+      <span class="tag" data-skill="Writing">Writing</span>
+      <span class="tag" data-skill="Social">Social</span>
+    </div>
+    <button class="apply start" onclick="finishRegistration()">Начать путь</button>
+  </div>
+
+  <header>
+    <button class="iconbtn" data-tab="feed" title="На главную">🏠</button>
+    <div class="stats"><span class="fire" data-tab="streak" style="cursor:pointer">🔥 <span id="streakVal">4</span></span><span class="coin">🪙 <span id="pointsVal">150</span></span></div>
+    <div class="avatar" id="avatarSlot"></div>
+  </header>
+  <nav>
+    <button class="active" data-tab="feed">Лента</button>
+    <button data-tab="path">Путь</button>
+    <button data-tab="dash">Дашборд</button>
+    <button data-tab="profile">Профиль</button>
+    <button data-tab="shop">Магазин</button>
+  </nav>
+  <main>
+    <div id="feed"></div>
+    <div id="path" style="display:none"></div>
+    <div id="dash" style="display:none"></div>
+    <div id="profile" style="display:none"></div>
+    <div id="shop" style="display:none"></div>
+    <div id="streak" style="display:none"></div>
+  </main>
+</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal"><h4 id="modalTitle"></h4><p id="modalText"></p><button onclick="closeModal()">Ок</button></div>
+</div>
+
+<script src="state.js"></script>
+<script src="feed.js"></script>
+<script src="profile.js"></script>
+<script src="path.js"></script>
+<script src="dashboard.js"></script>
+<script src="shop.js"></script>
+<script src="streak.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
